@@ -1,0 +1,95 @@
+stages:
+  - feature
+  - develop
+  - stage
+  - master
+
+#===========================================================================
+
+deploy_feature:
+  stage: feature
+  image: node:16-alpine
+
+  variables:
+    PREVIEW_URL: meet-webreinvent-feature.vercel.getdemo.dev
+    VERCEL_ORG_ID: $VERCEL_ORG_ID
+    VERCEL_PROJECT_ID: $VERCEL_PROJECT_ID
+
+  script:
+    - npm i -g vercel
+    - DEPLOYMENT_URL=$(VERCEL_ORG_ID=$VERCEL_ORG_ID VERCEL_PROJECT_ID=$VERCEL_PROJECT_ID vercel --yes -t $VERCEL_TOKEN --scope $VERCEL_SCOPE)
+    - vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN --scope $VERCEL_SCOPE
+    - echo $DEPLOYMENT_URL
+    - echo https://$PREVIEW_URL
+  only:
+    - /^feature/.*$/
+  tags:
+    - docker
+
+
+#===========================================================================
+
+deploy_develop:
+  stage: develop
+  image: node:16-alpine
+
+  variables:
+    PREVIEW_URL: meet-webreinvent-develop.vercel.getdemo.dev
+    VERCEL_ORG_ID: $VERCEL_ORG_ID
+    VERCEL_PROJECT_ID: $VERCEL_PROJECT_ID
+
+  script:
+    - npm i -g vercel
+    - DEPLOYMENT_URL=$(VERCEL_ORG_ID=$VERCEL_ORG_ID VERCEL_PROJECT_ID=$VERCEL_PROJECT_ID vercel --yes -t $VERCEL_TOKEN --scope $VERCEL_SCOPE)
+    - vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN --scope $VERCEL_SCOPE
+    - echo $DEPLOYMENT_URL
+    - echo https://$PREVIEW_URL
+  only:
+    - develop
+  tags:
+    - docker
+
+#===========================================================================
+
+deploy_stage:
+  stage: stage
+  image: node:16-alpine
+
+  variables:
+    PREVIEW_URL: meet-webreinvent-stage.vercel.getdemo.dev
+    VERCEL_ORG_ID: $VERCEL_ORG_ID
+    VERCEL_PROJECT_ID: $VERCEL_PROJECT_ID
+
+  script:
+    - npm i -g vercel
+    - DEPLOYMENT_URL=$(VERCEL_ORG_ID=$VERCEL_ORG_ID VERCEL_PROJECT_ID=$VERCEL_PROJECT_ID vercel --yes -t $VERCEL_TOKEN --scope $VERCEL_SCOPE)
+    - vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN --scope $VERCEL_SCOPE
+    - echo $DEPLOYMENT_URL
+    - echo https://$PREVIEW_URL
+  only:
+    - /^hotfix/.*$/
+    - /^release/.*$/
+  tags:
+    - docker
+
+#===========================================================================
+
+deploy_master:
+  stage: master
+  image: node:16-alpine
+
+  variables:
+    PREVIEW_URL: meet.webreinvent.com
+    VERCEL_ORG_ID: $VERCEL_ORG_ID
+    VERCEL_PROJECT_ID: $VERCEL_PROJECT_ID
+
+  script:
+    - npm i -g vercel
+    #- DEPLOYMENT_URL=$(VERCEL_ORG_ID=$VERCEL_ORG_ID VERCEL_PROJECT_ID=$VERCEL_PROJECT_ID vercel --yes -t $VERCEL_TOKEN --scope $VERCEL_SCOPE)
+    #- vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN --scope $VERCEL_SCOPE
+    - vercel --prod --token=$VERCEL_TOKEN
+    - echo https://$PREVIEW_URL
+  only:
+    - master
+  tags:
+    - docker
